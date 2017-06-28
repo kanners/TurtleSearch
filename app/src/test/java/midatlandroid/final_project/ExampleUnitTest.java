@@ -1,4 +1,4 @@
-package edu.wit.mobileapp.midatlandroidproject;
+package midatlandroid.final_project;
 
 import org.junit.Test;
 

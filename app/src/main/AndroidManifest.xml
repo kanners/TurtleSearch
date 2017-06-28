@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.wit.mobileapp.midatlandroidproject">
+    package="midatlandroid.final_project">
 
     <application
         android:allowBackup="true"

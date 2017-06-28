@@ -1,4 +1,4 @@
-package edu.wit.mobileapp.midatlandroidproject;
+package midatlandroid.final_project;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
