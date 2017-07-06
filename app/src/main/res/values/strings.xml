@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">Final_project</string>
+    <string name="app_name">Turtle Search</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+    <string-array name="sliding_drawer_array">
+        <item>Profile</item>
+        <item>Settings</item>
+    </string-array>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
