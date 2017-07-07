@@ -5,7 +5,9 @@
 
     <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
     <string-array name="sliding_drawer_array">
-        <item>Profile</item>
+        <item>Search</item>
+        <item>Shopping List</item>
+        <item>Starred Items</item>
         <item>Settings</item>
     </string-array>
 
