@@ -46,11 +46,11 @@ public class MainActivity extends AppCompatActivity {
            @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                FragmentManager fm = getFragmentManager();
-               Fragment fragment = new FragmentProfile();
+               Fragment fragment = new FragmentSearch();
 
                switch(position) {
                    case 0:
-                       fragment = new FragmentProfile();
+                       fragment = new FragmentSearch();
                        break;
                    case 1:
                        fragment = new FragmentSettings();
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             FragmentManager fm = getFragmentManager();
-            Fragment fragment = new FragmentProfile();
+            Fragment fragment = new FragmentSearch();
             fm.beginTransaction().replace(R.id.content_frame, fragment).commit();
             setTitle(drawerOptionLabels[0]);
         }
