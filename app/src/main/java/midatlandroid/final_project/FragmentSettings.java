@@ -73,7 +73,7 @@ public class FragmentSettings extends Fragment {
 
                 TextView results = (TextView) view.findViewById(R.id.resultsPerPage);
                 RadioButton light = (RadioButton) view.findViewById(R.id.radioLight);
-                int themeToApply = (light.isEnabled()) ? 1 : 0;
+                int themeToApply = (light.isChecked()) ? 1 : 0;
 
                 String resultsText = results.getText().toString().trim();
 
