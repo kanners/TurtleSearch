@@ -3,6 +3,8 @@ package midatlandroid.final_project;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize the database or open it if it exists
+        String path = "/data/data/" + getPackageName() + "/turtle_search.db";
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path, null);
+
+        // Add a settings table if it doesn't exist
+        db.execSQL("CREATE TABLE IF NOT EXISTS Settings(id INTEGER PRIMARY KEY AUTOINCREMENT, results INTEGER, theme INTEGER);");
+        // Check to see if the settings table is empty
+        String[] settingsCols = {"results","theme"};
+        Cursor cursor = db.query("Settings", settingsCols, null, null, null, null, null);
+        if (cursor.getCount() == 0) {
+            // If it is empty, add default values
+            db.execSQL("INSERT INTO Settings (results, theme) VALUES (15,1);");
+        }
+
+        // Close the database
+        db.close();
+
+
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerListView = (ListView) findViewById(R.id.left_drawer);
