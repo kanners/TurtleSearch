@@ -2,6 +2,7 @@ package midatlandroid.final_project;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
 
         // Initialize the database or open it if it exists
         String path = "/data/data/" + getPackageName() + "/turtle_search.db";
@@ -42,11 +43,24 @@ public class MainActivity extends AppCompatActivity {
             // If it is empty, add default values
             db.execSQL("INSERT INTO Settings (results, theme) VALUES (15,1);");
         }
+        // Gather info
+        int dbResults = 0, dbTheme = 0;
+        while (cursor.moveToNext()) {
+            dbResults = cursor.getInt(cursor.getColumnIndex("results"));
+            dbTheme = cursor.getInt(cursor.getColumnIndex("theme"));
+        }
+        switch (dbTheme) {
+            case 1:
+                setTheme(R.style.AppTheme);
+                break;
+            case 0:
+                setTheme(R.style.AppThemeDark);
+        }
+
 
         // Close the database
         db.close();
-
-
+        setContentView(R.layout.activity_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerListView = (ListView) findViewById(R.id.left_drawer);
@@ -86,10 +100,18 @@ public class MainActivity extends AppCompatActivity {
            }
         });
 
-        if (savedInstanceState == null) {
+        Intent intent = getIntent();
+
+        // if FragmentSettings called from SearchActivity
+        if (intent.hasExtra("Search")) {
+            FragmentManager fm = getFragmentManager();
+            Fragment fragment = new FragmentSettings();
+            fm.beginTransaction().add(R.id.content_frame, fragment).commit();
+
+        } else if (savedInstanceState == null) {
             FragmentManager fm = getFragmentManager();
             Fragment fragment = new FragmentSearch();
-            fm.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            fm.beginTransaction().add(R.id.content_frame, fragment).commit();
             setTitle(drawerOptionLabels[0]);
         }
     }

@@ -1,10 +1,12 @@
 package midatlandroid.final_project;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,13 +38,15 @@ public class FragmentSettings extends Fragment {
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path, null);
 
         // Gather existing information from the database
-        String[] settingsCols = {"results","theme"};
+        String[] settingsCols = {"results", "theme"};
         Cursor cursor = db.query("Settings", settingsCols, null, null, null, null, null);
         int dbResults = 0, dbTheme = 0;
         while (cursor.moveToNext()) {
             dbResults = cursor.getInt(cursor.getColumnIndex("results"));
             dbTheme = cursor.getInt(cursor.getColumnIndex("theme"));
         }
+        // holds initial theme from database
+        final int dbThemeInitial = dbTheme;
 
         // Convert the database settings for the program to display
         boolean colorLight = (dbTheme == 1) ? true : false;
@@ -96,16 +100,28 @@ public class FragmentSettings extends Fragment {
                 SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path, null);
                 String sqlUpdate = String.format("UPDATE Settings SET theme = %d, results = %d where id == 1;", themeToApply, resultsToApply);
                 db.execSQL(sqlUpdate);
-                db.close();
 
+                // if the initial theme is different from the theme to apply
+                if (dbThemeInitial != themeToApply) {
+                    // restart MainActivity so it can apply the appropriate theme
+                    Intent intentMain = new Intent(context, MainActivity.class);
+                    intentMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intentMain);
+
+                    // restart SearchActivity
+                    Intent intentSearch = new Intent(context, MainActivity.class);
+                    intentSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intentSearch);
+                }
+
+                db.close();
                 toast = Toast.makeText(context, "Settings applied", duration);
                 toast.show();
             }
+
         });
 
-        // Close the database
         db.close();
         return view;
     }
-
 }
