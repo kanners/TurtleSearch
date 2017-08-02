@@ -12,7 +12,7 @@ public class ListingResults {
       products = new ArrayList(0);
     }
 
-    public static ArrayList getResults(String inString) {
+    public static ArrayList<ProductListing> getResults(String inString) {
         /*
         Ignore, only for console testing
 
@@ -41,11 +41,11 @@ public class ListingResults {
         /*
             Some other api
          */
-        products.addAll(getAmazonProducts(query));
+        //products.addAll(getAmazonProducts(query));
 
 
 
-
+        /*
 
         for (int index = 0; index < products.size(); index++) {
             //System.out.println(products.get(index).toString());
@@ -53,6 +53,7 @@ public class ListingResults {
             // TODO Add all information to a database
 
         }
+        */
         return products;
     }
 
