@@ -14,7 +14,6 @@ import java.util.ArrayList;
 /**
  * Created by kanners on 7/27/2017.
  */
-
 // Class for virtual table
 public class DatabaseTable {
 
@@ -24,7 +23,6 @@ public class DatabaseTable {
     public static final String COL_NAME = "NAME";
     public static final String COL_RETAILER = "RETAILER";
     public static final String COL_PRICE = "PRICE";
-    public static final String COL_RATING = "RATING";
     public static final String COL_URL = "URL";
     public static final String COL_ID = "ID";
 
@@ -71,8 +69,7 @@ public class DatabaseTable {
 
         private static final String FTS_TABLE_CREATE =
                 "CREATE VIRTUAL TABLE" + FTS_VIRTUAL_TABLE + "USING fts3 (" + COL_NAME
-                + ", " + COL_RETAILER + ", " + COL_PRICE + ", " + COL_RATING + ", "
-                + COL_URL + ", " + COL_ID + ")";
+                + ", " + COL_RETAILER + ", " + COL_PRICE + ", " + COL_URL + ", " + COL_ID + ")";
 
         DatabaseOpenHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -96,25 +93,23 @@ public class DatabaseTable {
 
             ListingResults result = new ListingResults();
 
-            ArrayList <ProductListing> resultList = result.getResults(searchItem);
+            ArrayList <ListingResults.ProductListing> resultList = result.getResults(searchItem);
 
             for (int i = 0; i < resultList.size(); i++) {
                 String name = resultList.get(i).name;
                 String retailer = resultList.get(i).retailer;
                 double price = resultList.get(i).price;
-                double rating = resultList.get(i).rating;
                 String url = resultList.get(i).url;
                 double id = 0.; id++;
-                addData(name, retailer, price, rating, url, id);
+                addData(name, retailer, price, url, id);
             }
         }
 
-        private long addData(String name, String retailer, double price, double rating, String url, double id) {
+        private long addData(String name, String retailer, double price, String url, double id) {
             ContentValues initialValues = new ContentValues();
             initialValues.put(COL_NAME, name);
             initialValues.put(COL_RETAILER, retailer);
             initialValues.put(COL_PRICE, price);
-            initialValues.put(COL_RATING, rating);
             initialValues.put(COL_URL, url);
             initialValues.put(COL_ID, id);
 

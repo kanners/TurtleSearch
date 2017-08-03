@@ -26,7 +26,7 @@ public class FragmentHistory extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+       /* final View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
         // Open the database
         String path = "/data/data/" + getActivity().getPackageName() + "/turtle_search.db";
@@ -35,7 +35,7 @@ public class FragmentHistory extends Fragment {
         // Close database
         db.close();
 
-        List<ListSearchItem> list = new ArrayList<ListSearchItem>();
+        List<ListSearchItem> list = new ArrayList<>();
 
         // TODO: store recent search
         // database or arraylist to store recent searches and date accessed
@@ -58,7 +58,8 @@ public class FragmentHistory extends Fragment {
             }
             });
 
-        return rootView;
+        return rootView; */
+       return null;
     }
 
 }

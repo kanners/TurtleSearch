@@ -5,10 +5,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class ListingResults {
 
+    // Class for the items found in each product
     public static class ProductListing {
         public String name;
         public double price;
@@ -27,8 +27,7 @@ public class ListingResults {
         }
     }
 
-
-
+    
     protected ArrayList<ProductListing> products;
 
     public ListingResults() {
