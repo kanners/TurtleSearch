@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50sp"
-            android:text="Results Per Page:"
+            android:text="Max Results:"
             android:textSize="18sp" />
 
         <EditText
@@ -29,7 +29,7 @@
             android:layout_width="200sp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30sp"
-            android:text=" Valid between (15 and 100)"
+            android:text=" Valid between (5 and 20)"
             android:textStyle="italic" />
 
 

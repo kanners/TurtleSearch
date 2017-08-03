@@ -89,7 +89,7 @@ public class FragmentSettings extends Fragment {
 
                 int resultsToApply = Integer.parseInt(resultsText);
 
-                if (resultsToApply < 15 || resultsToApply > 100) {
+                if (resultsToApply < 5 || resultsToApply > 20) {
                     toast = Toast.makeText(context, "Invalid range for results", duration);
                     toast.show();
                     return;
