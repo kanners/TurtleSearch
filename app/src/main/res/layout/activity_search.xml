@@ -12,6 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <ListView
+        android:id="@+id/ListView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
     <RelativeLayout
         android:id="@+id/search_left_drawer_layout"
         android:layout_width="240dp"
@@ -30,4 +35,5 @@
     </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>
+
 

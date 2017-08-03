@@ -11,6 +11,7 @@
     <string-array name="sliding_drawer_array">
         <item>Search</item>
         <item>Settings</item>
+        <item>History</item>
         <!--<item>Shopping List</item>
         <item>Starred Items</item>-->
 

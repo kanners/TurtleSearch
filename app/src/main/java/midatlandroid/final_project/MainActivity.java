@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
                    case 1:
                        fragment = new FragmentSettings();
                        break;
+                   case 2:
+                       fragment = new FragmentHistory();
+                       break;
                }
 
                fm.beginTransaction().replace(R.id.content_frame, fragment).commit();

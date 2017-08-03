@@ -25,6 +25,9 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -33,6 +36,8 @@ public class SearchActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
 
     String[] drawerOptionLabels;
+
+    DatabaseTable dbResults = new DatabaseTable(this);
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +104,9 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
+        List<ListSearchItem> list = new ArrayList<ListSearchItem>();
+        handleIntent(getIntent());
+
     }
 
     @Override
@@ -116,6 +124,8 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(false);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -141,6 +151,8 @@ public class SearchActivity extends AppCompatActivity {
         //verify action
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            Cursor c = dbResults.getResults(query, null);
+
         }
     }
 
