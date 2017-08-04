@@ -38,6 +38,7 @@ public class SearchActivity extends AppCompatActivity {
     private ListView drawerListView;
     private RelativeLayout drawerRelativeLayout;
     private ActionBarDrawerToggle drawerToggle;
+    private String resultsPerSearch;
 
     String[] drawerOptionLabels;
 
@@ -59,6 +60,7 @@ public class SearchActivity extends AppCompatActivity {
             dbResults = cursor.getInt(cursor.getColumnIndex("results"));
             dbTheme = cursor.getInt(cursor.getColumnIndex("theme"));
         }
+        resultsPerSearch = Integer.toString(dbResults);
         // Apply theme
         switch (dbTheme) {
             case 1:
@@ -67,14 +69,6 @@ public class SearchActivity extends AppCompatActivity {
             case 0:
                 setTheme(R.style.AppThemeDark);
         }
-
-
-
-
-
-
-
-
 
         // Close settings database
         db.close();
@@ -107,12 +101,16 @@ public class SearchActivity extends AppCompatActivity {
                         finish();
                         break;
                     case 1:
-                        Intent intent = new Intent(SearchActivity.this, MainActivity.class);
+                        // Start FragementSettings from MainActivity
+                        finish();
+                        Intent intent;
+                        intent = new Intent(SearchActivity.this, MainActivity.class);
                         intent.setClass(SearchActivity.this, MainActivity.class);
                         intent.setAction(Intent.ACTION_SEND);
                         intent.putExtra("History", "from SearchActivity");
                         SearchActivity.this.startActivity(intent);
                         break;
+<<<<<<< HEAD
                     case 2:
                         Intent intent2 = new Intent(SearchActivity.this, MainActivity.class);
                         intent2.setClass(SearchActivity.this, MainActivity.class);
@@ -128,6 +126,8 @@ public class SearchActivity extends AppCompatActivity {
                         intent3.putExtra("Search", "from SearchActivity");
                         SearchActivity.this.startActivity(intent3);
                         break;
+=======
+>>>>>>> 72b9b54c1da040a8218dfd3db2b333159df374b9
                 }
             }
         });
@@ -223,7 +223,7 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             String[] cols = {"name","price", "retailer", "url"};
-            Cursor cursor = db.query("Results", cols, null, null, null, null, null);
+            Cursor cursor = db.query("Results", cols, null, null, null, null, "price", resultsPerSearch);
 
             cursor.moveToFirst();
             List<ListSearchItem> listView = new ArrayList<>();
@@ -231,6 +231,7 @@ public class SearchActivity extends AppCompatActivity {
             // Gather info
             String dbName = "", dbRet = "", dbURL = "";
             double dbPrice = 0.;
+<<<<<<< HEAD
             if (cursor.getCount() != 0) {
                 do {
                     dbName = cursor.getString(cursor.getColumnIndex("name"));
@@ -245,6 +246,18 @@ public class SearchActivity extends AppCompatActivity {
                     listView.add(item);
                 } while (cursor.moveToNext());
             }
+=======
+            do {
+                dbName = cursor.getString(cursor.getColumnIndex("name"));
+                dbPrice = cursor.getDouble(cursor.getColumnIndex("price"));
+                dbRet = cursor.getString(cursor.getColumnIndex("retailer"));
+                ListSearchItem item = new ListSearchItem();
+                item.name = dbName;
+                item.price = dbPrice;
+                item.retailer = dbRet;
+                listView.add(item);
+            } while (cursor.moveToNext());
+>>>>>>> 72b9b54c1da040a8218dfd3db2b333159df374b9
 
             ListItemAdapter adapter;
             adapter = new ListItemAdapter(this, 0, listView);

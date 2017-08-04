@@ -93,12 +93,6 @@ public class MainActivity extends AppCompatActivity {
                        fragment = new FragmentSearch();
                        break;
                    case 1:
-                       fragment = new FragmentShoppingList();
-                       break;
-                   case 2:
-                       fragment = new FragmentHistory();
-                       break;
-                   case 3:
                        fragment = new FragmentSettings();
                        break;
                }
