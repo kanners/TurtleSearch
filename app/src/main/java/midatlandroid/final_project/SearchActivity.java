@@ -95,6 +95,13 @@ public class SearchActivity extends AppCompatActivity {
                         finish();
                         break;
                     case 1:
+                        Intent intent = new Intent(SearchActivity.this, MainActivity.class);
+                        intent.setClass(SearchActivity.this, MainActivity.class);
+                        intent.setAction(Intent.ACTION_SEND);
+                        intent.putExtra("Search", "from SearchActivity");
+                        SearchActivity.this.startActivity(intent);
+                        break;
+                    case 4:
                         // Start FragementSettings from MainActivity
                         Intent intent = new Intent(SearchActivity.this, MainActivity.class);
                         intent.setClass(SearchActivity.this, MainActivity.class);
