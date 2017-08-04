@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // Gather info
         int dbResults = 0, dbTheme = 0;
+
         while (cursor.moveToNext()) {
             dbResults = cursor.getInt(cursor.getColumnIndex("results"));
             dbTheme = cursor.getInt(cursor.getColumnIndex("theme"));

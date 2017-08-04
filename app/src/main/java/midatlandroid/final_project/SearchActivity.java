@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -65,6 +66,15 @@ public class SearchActivity extends AppCompatActivity {
             case 0:
                 setTheme(R.style.AppThemeDark);
         }
+
+
+
+
+
+
+
+
+
         // Close settings database
         db.close();
         setContentView(R.layout.activity_search);
@@ -102,14 +112,14 @@ public class SearchActivity extends AppCompatActivity {
                         intent.putExtra("Search", "from SearchActivity");
                         SearchActivity.this.startActivity(intent);
                         break;
-                    case 4:
-                        // Start FragementSettings from MainActivity
-                        Intent intent = new Intent(SearchActivity.this, MainActivity.class);
-                        intent.setClass(SearchActivity.this, MainActivity.class);
-                        intent.setAction(Intent.ACTION_SEND);
-                        intent.putExtra("Search", "from SearchActivity");
-                        SearchActivity.this.startActivity(intent);
-                        break;
+//                    case 4:
+//                        // Start FragementSettings from MainActivity
+//                        Intent intent = new Intent(SearchActivity.this, MainActivity.class);
+//                        intent.setClass(SearchActivity.this, MainActivity.class);
+//                        intent.setAction(Intent.ACTION_SEND);
+//                        intent.putExtra("Search", "from SearchActivity");
+//                        SearchActivity.this.startActivity(intent);
+//                        break;
                 }
             }
         });
@@ -175,18 +185,61 @@ public class SearchActivity extends AppCompatActivity {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
 
-            List<ListSearchItem> list = new ArrayList<>();
-            ListSearchItem item1 = new ListSearchItem();
-            item1.name ="bob";
-            list.add(item1);
-            ListSearchItem item2 = new ListSearchItem();
-            item2.name ="bob";
-            list.add(item2);
+            String path = "/data/data/" + getPackageName() + "/turtle_search.db";
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path, null);
+
+            Context context = getApplicationContext();
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast;
+
+            //EditText field = (EditText) findViewById(R.id.queryField);
+            String input = query;
+            //String input = field.getText().toString().trim();
+
+            if (input.equals("")) {
+                toast = Toast.makeText(context, "Nothing", duration);
+                toast.show();
+                return;
+            }
+
+            ListingResults listingResults = new ListingResults();
+            ArrayList<ProductListing> listings = listingResults.getResults(input);
+
+            db.execSQL("DROP TABLE Results;");
+            db.execSQL("CREATE TABLE IF NOT EXISTS Results(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price DECIMAL, retailer TEXT, url TEXT);");
+
+            ProductListing[] list = listings.toArray(new ProductListing[0]);
+
+            for (ProductListing pl : list) {
+                db.execSQL(String.format("INSERT INTO Results (name, price, retailer, url) VALUES (\"%s\", %f, \"%s\", \"%s\");", pl.name, pl.price, pl.retailer, pl.url));
+            }
+
+            String[] cols = {"name","price", "retailer", "url"};
+            Cursor cursor = db.query("Results", cols, null, null, null, null, null);
+
+            cursor.moveToFirst();
+            List<ListSearchItem> listView = new ArrayList<>();
+
+            // Gather info
+            String dbName = "", dbRet = "", dbURL = "";
+            double dbPrice = 0.;
+            while (cursor.moveToNext()) {
+                dbName = cursor.getString(cursor.getColumnIndex("name"));
+                dbPrice = cursor.getDouble(cursor.getColumnIndex("price"));
+                dbRet = cursor.getString(cursor.getColumnIndex("retailer"));
+                ListSearchItem item = new ListSearchItem();
+                item.name = dbName;
+                item.price = dbPrice;
+                item.retailer = dbRet;
+                listView.add(item);
+            }
 
             ListItemAdapter adapter;
-            adapter = new ListItemAdapter(this, 0, list);
-            ListView listView = (ListView) findViewById(R.id.ListView);
-            listView.setAdapter(adapter);
+            adapter = new ListItemAdapter(this, 0, listView);
+            ListView listV = (ListView) findViewById(R.id.ListView);
+            listV.setAdapter(adapter);
+
+            db.close();
 
         } if (Intent.ACTION_SEND.equals(intent.getAction())) {
             intent.getExtras();
