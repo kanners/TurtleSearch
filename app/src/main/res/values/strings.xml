@@ -10,8 +10,6 @@
     <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
     <string-array name="sliding_drawer_array">
         <item>Search</item>
-        <item>Shopping List</item>
-        <item>History</item>
         <item>Settings</item>
         <!--<item>Starred Items</item>-->
 
