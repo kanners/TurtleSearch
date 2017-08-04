@@ -57,7 +57,7 @@ public class FragmentSearch extends Fragment {
         final Button newSearchBtn = (Button) rootView.findViewById(R.id.new_search_btn);
         newSearchBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                Intent intent = new Intent(getActivity(), SearchActivity2.class);
                 startActivity(intent);
             }
         });

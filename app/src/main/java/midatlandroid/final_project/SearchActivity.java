@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -104,8 +105,17 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-        List<ListSearchItem> list = new ArrayList<ListSearchItem>();
-        handleIntent(getIntent());
+        List<ProductListing> list = new ArrayList();
+        ListingResults listingResults = new ListingResults();
+
+        // Get the intent, verify action, and perform query
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            list = listingResults.getResults(query);
+            //Log.v("::~~TS~~::","got results");
+        }
+        //handleIntent(getIntent());
 
     }
 

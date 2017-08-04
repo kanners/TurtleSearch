@@ -93,7 +93,7 @@ public class DatabaseTable {
 
             ListingResults result = new ListingResults();
 
-            ArrayList <ListingResults.ProductListing> resultList = result.getResults(searchItem);
+            ArrayList <ProductListing> resultList = result.getResults(searchItem);
 
             for (int i = 0; i < resultList.size(); i++) {
                 String name = resultList.get(i).name;
