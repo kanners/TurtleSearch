@@ -8,5 +8,5 @@ class ListSearchItem {
     public String name;
     public double price;
     public String retailer;
-    // date accessed
+    public String url;
 }

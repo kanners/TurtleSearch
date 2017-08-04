@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -109,17 +110,24 @@ public class SearchActivity extends AppCompatActivity {
                         Intent intent = new Intent(SearchActivity.this, MainActivity.class);
                         intent.setClass(SearchActivity.this, MainActivity.class);
                         intent.setAction(Intent.ACTION_SEND);
-                        intent.putExtra("Search", "from SearchActivity");
+                        intent.putExtra("History", "from SearchActivity");
                         SearchActivity.this.startActivity(intent);
                         break;
-//                    case 4:
-//                        // Start FragementSettings from MainActivity
-//                        Intent intent = new Intent(SearchActivity.this, MainActivity.class);
-//                        intent.setClass(SearchActivity.this, MainActivity.class);
-//                        intent.setAction(Intent.ACTION_SEND);
-//                        intent.putExtra("Search", "from SearchActivity");
-//                        SearchActivity.this.startActivity(intent);
-//                        break;
+                    case 2:
+                        Intent intent2 = new Intent(SearchActivity.this, MainActivity.class);
+                        intent2.setClass(SearchActivity.this, MainActivity.class);
+                        intent2.setAction(Intent.ACTION_SEND);
+                        intent2.putExtra("ShoppingList", "from SearchActivity");
+                        SearchActivity.this.startActivity(intent2);
+                        break;
+                    case 3:
+                        // Start FragementSettings from MainActivity
+                        Intent intent3 = new Intent(SearchActivity.this, MainActivity.class);
+                        intent3.setClass(SearchActivity.this, MainActivity.class);
+                        intent3.setAction(Intent.ACTION_SEND);
+                        intent3.putExtra("Search", "from SearchActivity");
+                        SearchActivity.this.startActivity(intent3);
+                        break;
                 }
             }
         });
@@ -223,21 +231,38 @@ public class SearchActivity extends AppCompatActivity {
             // Gather info
             String dbName = "", dbRet = "", dbURL = "";
             double dbPrice = 0.;
-            while (cursor.moveToNext()) {
-                dbName = cursor.getString(cursor.getColumnIndex("name"));
-                dbPrice = cursor.getDouble(cursor.getColumnIndex("price"));
-                dbRet = cursor.getString(cursor.getColumnIndex("retailer"));
-                ListSearchItem item = new ListSearchItem();
-                item.name = dbName;
-                item.price = dbPrice;
-                item.retailer = dbRet;
-                listView.add(item);
+            if (cursor.getCount() != 0) {
+                do {
+                    dbName = cursor.getString(cursor.getColumnIndex("name"));
+                    dbPrice = cursor.getDouble(cursor.getColumnIndex("price"));
+                    dbRet = cursor.getString(cursor.getColumnIndex("retailer"));
+                    dbURL = cursor.getString(cursor.getColumnIndex("url"));
+                    ListSearchItem item = new ListSearchItem();
+                    item.name = dbName;
+                    item.price = dbPrice;
+                    item.retailer = dbRet;
+                    item.url = dbURL;
+                    listView.add(item);
+                } while (cursor.moveToNext());
             }
 
             ListItemAdapter adapter;
             adapter = new ListItemAdapter(this, 0, listView);
             ListView listV = (ListView) findViewById(R.id.ListView);
             listV.setAdapter(adapter);
+
+
+            listV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                   ListSearchItem clicked = new ListSearchItem();
+                    clicked = (ListSearchItem) (parent.getItemAtPosition(position));
+                    String URL = clicked.url;
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(URL));
+                    startActivity(i);
+                }
+            });
 
             db.close();
 

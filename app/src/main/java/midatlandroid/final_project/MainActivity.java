@@ -117,8 +117,15 @@ public class MainActivity extends AppCompatActivity {
             FragmentManager fm = getFragmentManager();
             Fragment fragment = new FragmentSettings();
             fm.beginTransaction().add(R.id.content_frame, fragment).commit();
-
-        } else if (savedInstanceState == null) {
+        } else if (intent.hasExtra("ShoppingList")) {
+            FragmentManager fm = getFragmentManager();
+            Fragment fragment = new FragmentShoppingList();
+            fm.beginTransaction().add(R.id.content_frame, fragment).commit();
+        } else if (intent.hasExtra("History")) {
+            FragmentManager fm = getFragmentManager();
+            Fragment fragment = new FragmentHistory();
+            fm.beginTransaction().add(R.id.content_frame, fragment).commit();
+        }else if (savedInstanceState == null) {
             FragmentManager fm = getFragmentManager();
             Fragment fragment = new FragmentSearch();
             fm.beginTransaction().add(R.id.content_frame, fragment).commit();

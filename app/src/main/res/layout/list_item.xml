@@ -21,10 +21,10 @@
         android:textSize="18sp"/>
 
     <TextView
-        android:id="@+id/ret"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="18sp"/>
+    android:id="@+id/ret"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textStyle="bold"
+    android:textSize="18sp"/>
 
 </LinearLayout>
