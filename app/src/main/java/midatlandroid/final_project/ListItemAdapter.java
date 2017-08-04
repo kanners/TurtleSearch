@@ -1,13 +1,16 @@
 package midatlandroid.final_project;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by kanners on 7/28/2017.
@@ -30,11 +33,20 @@ public class ListItemAdapter extends ArrayAdapter<ListSearchItem> {
 
         TextView price;
         price = (TextView) view.findViewById(R.id.price);
-        price.setText(Double.toString(item.price));
+        String cost = '$' + Double.toString(item.price);
+        price.setText(cost);
+        price.setTextColor(Color.rgb(105,105,105));
+
 
         TextView retailer;
         retailer = (TextView) view.findViewById(R.id.ret);
         retailer.setText(item.retailer);
+        if (item.retailer.equals("Walmart")) {
+            retailer.setTextColor(Color.rgb(0,125,198));
+        } else if (item.retailer.equals("Ebay")) {
+            retailer.setTextColor(Color.rgb(229, 50, 56));
+        }
+
 
         return view;
         }

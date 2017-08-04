@@ -15,7 +15,9 @@
     <ListView
         android:id="@+id/ListView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:divider="#000000"
+        android:dividerHeight="1dp"/>
 
     <RelativeLayout
         android:id="@+id/search_left_drawer_layout"

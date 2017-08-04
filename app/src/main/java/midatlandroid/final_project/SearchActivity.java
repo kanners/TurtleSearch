@@ -9,6 +9,8 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.provider.SearchRecentSuggestions;
+import android.speech.RecognizerIntent;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -41,8 +44,6 @@ public class SearchActivity extends AppCompatActivity {
     private String resultsPerSearch;
 
     String[] drawerOptionLabels;
-
-    DatabaseTable dbResults = new DatabaseTable(this);
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,45 +108,27 @@ public class SearchActivity extends AppCompatActivity {
                         intent = new Intent(SearchActivity.this, MainActivity.class);
                         intent.setClass(SearchActivity.this, MainActivity.class);
                         intent.setAction(Intent.ACTION_SEND);
-                        intent.putExtra("History", "from SearchActivity");
+                        intent.putExtra("Search", "from SearchActivity");
                         SearchActivity.this.startActivity(intent);
                         break;
-<<<<<<< HEAD
-                    case 2:
-                        Intent intent2 = new Intent(SearchActivity.this, MainActivity.class);
-                        intent2.setClass(SearchActivity.this, MainActivity.class);
-                        intent2.setAction(Intent.ACTION_SEND);
-                        intent2.putExtra("ShoppingList", "from SearchActivity");
-                        SearchActivity.this.startActivity(intent2);
-                        break;
-                    case 3:
-                        // Start FragementSettings from MainActivity
-                        Intent intent3 = new Intent(SearchActivity.this, MainActivity.class);
-                        intent3.setClass(SearchActivity.this, MainActivity.class);
-                        intent3.setAction(Intent.ACTION_SEND);
-                        intent3.putExtra("Search", "from SearchActivity");
-                        SearchActivity.this.startActivity(intent3);
-                        break;
-=======
->>>>>>> 72b9b54c1da040a8218dfd3db2b333159df374b9
+
                 }
             }
         });
-
 
         handleIntent(getIntent());
 
         List<ProductListing> list = new ArrayList();
         ListingResults listingResults = new ListingResults();
 
-        // Get the intent, verify action, and perform query
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            list = listingResults.getResults(query);
-            Toast toast = Toast.makeText(getApplicationContext(), "results got", Toast.LENGTH_LONG);
-            toast.show();
-        }
+//        // Get the intent, verify action, and perform query
+//        Intent intent = getIntent();
+//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//            String query = intent.getStringExtra(SearchManager.QUERY);
+//            list = listingResults.getResults(query);
+//            Toast toast = Toast.makeText(getApplicationContext(), "results got", Toast.LENGTH_LONG);
+//            toast.show();
+//        }
 
 
     }
@@ -193,6 +176,10 @@ public class SearchActivity extends AppCompatActivity {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
 
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query,null);
+
             String path = "/data/data/" + getPackageName() + "/turtle_search.db";
             SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path, null);
 
@@ -231,7 +218,7 @@ public class SearchActivity extends AppCompatActivity {
             // Gather info
             String dbName = "", dbRet = "", dbURL = "";
             double dbPrice = 0.;
-<<<<<<< HEAD
+
             if (cursor.getCount() != 0) {
                 do {
                     dbName = cursor.getString(cursor.getColumnIndex("name"));
@@ -246,18 +233,6 @@ public class SearchActivity extends AppCompatActivity {
                     listView.add(item);
                 } while (cursor.moveToNext());
             }
-=======
-            do {
-                dbName = cursor.getString(cursor.getColumnIndex("name"));
-                dbPrice = cursor.getDouble(cursor.getColumnIndex("price"));
-                dbRet = cursor.getString(cursor.getColumnIndex("retailer"));
-                ListSearchItem item = new ListSearchItem();
-                item.name = dbName;
-                item.price = dbPrice;
-                item.retailer = dbRet;
-                listView.add(item);
-            } while (cursor.moveToNext());
->>>>>>> 72b9b54c1da040a8218dfd3db2b333159df374b9
 
             ListItemAdapter adapter;
             adapter = new ListItemAdapter(this, 0, listView);
@@ -283,6 +258,7 @@ public class SearchActivity extends AppCompatActivity {
             intent.getExtras();
         }
     }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
