@@ -1,6 +1,8 @@
 package midatlandroid.final_project;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,7 +25,8 @@ public class SearchActivity2 extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Toast info
+                String path = "/data/data/" + getPackageName() + "/turtle_search.db";
+                SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path, null);
 
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
@@ -41,8 +44,15 @@ public class SearchActivity2 extends AppCompatActivity {
                 ListingResults listingResults = new ListingResults();
                 ArrayList<ProductListing> listings = listingResults.getResults(input);
 
-                toast = Toast.makeText(context,"success", duration);
-                toast.show();
+                db.execSQL("DROP TABLE Results;");
+                db.execSQL("CREATE TABLE IF NOT EXISTS Results(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price DECIMAL, retailer TEXT, url TEXT);");
+
+                ProductListing[] list = listings.toArray(new ProductListing[0]);
+
+                for (ProductListing pl : list) {
+                    db.execSQL(String.format("INSERT INTO Results (name, price, retailer, url) VALUES (\"%s\", %f, \"%s\", \"%s\");", pl.name, pl.price, pl.retailer, pl.url));
+                }
+                db.close();
             }
         });
 

@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,9 +118,9 @@ public class SearchActivity extends AppCompatActivity {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             list = listingResults.getResults(query);
-            //Log.v("::~~TS~~::","got results");
+            Toast toast = Toast.makeText(getApplicationContext(), "results got", Toast.LENGTH_LONG);
+            toast.show();
         }
-        //handleIntent(getIntent());
 
 
     }
