@@ -1,5 +1,10 @@
 package midatlandroid.final_project;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -8,26 +13,46 @@ import java.util.ArrayList;
 
 public class ListingResults {
 
-    // Class for the items found in each product
-    public static class ProductListing {
-        public String name;
-        public double price;
-        public String retailer;
-        public String url;
+    public class GetData extends AsyncTask<String, Void, String> {
+        public GetData() {
 
-        public ProductListing() {
-            name = "";
-            price = 0.0;
-            retailer = "";
-            url = "";
         }
+        @Override
+        public String doInBackground(String... params) {
+            String result = "";
+            HttpURLConnection xml = null;
 
-        public String toString() {
-            return String.format("Retailer:%s Price:%f\nProduct:\"%s\"\n%s\n", retailer, price, name, url);
+            try {
+                URL url = new URL(params[0]);
+                xml = (HttpURLConnection) url.openConnection();
+
+                int responseCode = xml.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream in = new BufferedInputStream(xml.getInputStream());
+                    StringBuffer sb = new StringBuffer();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                    String read;
+
+                    while ((read = br.readLine()) != null) {
+                        sb.append(read);
+                    }
+                    br.close();
+                    result = sb.toString();
+                }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                xml.disconnect();
+            }
+
+            return result;
         }
     }
 
-    
     protected ArrayList<ProductListing> products;
 
     public ListingResults() {
@@ -70,7 +95,7 @@ public class ListingResults {
     /*
         Parse xml content from a line of xml based off of tag
      */
-    private static String getElement(String item, String tag) {
+    private String getElement(String item, String tag) {
         String[] elemSplit = item.split("<" + tag + ">");
         // If the tag is missing, skip it
         if (elemSplit.length == 1) {
@@ -80,7 +105,7 @@ public class ListingResults {
         }
     }
 
-    private static String getProductIdElement(String item) {
+    private String getProductIdElement(String item) {
         String[] elemSplit = item.split("<ProductID type=\"Reference\">");
         // If the tag is missing, skip it
         if (elemSplit.length == 1) {
@@ -90,7 +115,7 @@ public class ListingResults {
         }
     }
 
-    private static String getCurrentPriceElement(String item) {
+    private String getCurrentPriceElement(String item) {
         String[] elemSplit = item.split("<ConvertedCurrentPrice currencyID=\"USD\">");
         // If the tag is missing, skip it
         if (elemSplit.length == 1) {
@@ -100,120 +125,84 @@ public class ListingResults {
         }
     }
 
-    private static ArrayList<ProductListing> getWalmartProducts(String query) {
+    private ArrayList<ProductListing> getWalmartProducts(String query) {
         ArrayList<ProductListing> amazon = new ArrayList(0);
-        String result;
         String wmURL = "http://api.walmartlabs.com/v1/search?query=" + query + "&format=xml&apiKey=5smuvzrv9u6dz82y6hd6jgve";
-        try {
-            URL url = new URL(wmURL);
-            HttpURLConnection xml = (HttpURLConnection) url.openConnection();
-            InputStream in = new BufferedInputStream(xml.getInputStream());
-            StringBuffer sb = new StringBuffer();
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String read;
+        GetData gd = new GetData();
+        // xml for walmart's products
+        String result = gd.doInBackground(wmURL);
 
-            while ((read = br.readLine()) != null) {
-                sb.append(read);
-            }
-            br.close();
+        int itemCount = Integer.parseInt(getElement(result, "numItems"));
 
-            // xml for walmart's products
-            result = sb.toString();
+        // parsing xml
+        String[] items = result.split("<item>"); // do not include first for the parse
+        for (int itemIndex = 1; itemIndex <= itemCount; itemIndex++) {
+            ProductListing prod = new ProductListing();
+            String item = items[itemIndex];
 
-            int itemCount = Integer.parseInt(getElement(result, "numItems"));
+            prod.name = getElement(item,"name");
+            prod.retailer = "Walmart";
+            prod.price = Double.parseDouble(getElement(item, "salePrice"));
+            prod.url = getElement(item, "productUrl");
 
-            // parsing xml
-            String[] items = result.split("<item>"); // do not include first for the parse
-            for (int itemIndex = 1; itemIndex <= itemCount; itemIndex++) {
-                ProductListing prod = new ProductListing();
-                String item = items[itemIndex];
-
-                prod.name = getElement(item,"name");
-                prod.retailer = "Walmart";
-                prod.price = Double.parseDouble(getElement(item, "salePrice"));
-                prod.url = getElement(item, "productUrl");
-
-                amazon.add(prod);
-            }
-
-        } catch (MalformedURLException e) {
-            //System.out.print("walmart: Invalid search query");
-        } catch (IOException e) {
-            //System.out.print("walmart: Failed to open url");
+            amazon.add(prod);
         }
+
         return amazon;
     }
 
-    private static ArrayList<ProductListing> getEbayProducts(String query) {
+    private ArrayList<ProductListing> getEbayProducts(String query) {
         ArrayList<ProductListing> ebay = new ArrayList<ProductListing>();
-        String result;
         int itemCount = 10;
         String ebURL = "http://open.api.ebay.com/shopping?callname=FindProducts&responseencoding=XML" +
                 "&appid=darrienk-TurtleSe-PRD-38e2d25a0-c44dbc5e&siteid=0&version=967&QueryKeywords=" + query +
                 "&AvailableItemsOnly=true&MaxEntries=" + itemCount;
-        try {
-            URL url = new URL(ebURL);
-            HttpURLConnection xml = (HttpURLConnection) url.openConnection();
-            InputStream in = new BufferedInputStream(xml.getInputStream());
-            StringBuffer sb = new StringBuffer();
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String read;
 
-            while ((read = br.readLine()) != null) {
-                sb.append(read);
-            }
-            br.close();
+        GetData gd = new GetData();
+        String result = gd.doInBackground(ebURL);
 
-            // xml for ebay's products
-            result = sb.toString();
-
-            // parsing xml
-            String[] items = result.split("<Product>"); // do not include first for the parse
-            if (itemCount > items.length) {
-                itemCount = items.length - 1;
-            }
-            for (int itemIndex = 1; itemIndex <= itemCount; itemIndex++) {
-                ProductListing prod = new ProductListing();
-                String item = items[itemIndex];
-
-                String productId = getProductIdElement(item), currentPrice;
-                prod.name = getElement(item,"Title");
-                prod.retailer = "Ebay";
-
-                // Product Id to Item Id
-                String itemIdXml = ebayProductIdToItemId(productId);
-
-                String itemId = getElement(itemIdXml, "itemId");
-
-                if (itemId.equals("XML_TAG_NOT_FOUND")) {
-                    continue;
-                }
-
-                String itemContentsXml = ebayGetItemById(itemId);
-
-                currentPrice = getCurrentPriceElement(itemContentsXml);
-
-                if (currentPrice.equals("XML_TAG_NOT_FOUND")) {
-                    prod.price = -1.0;
-                } else {
-                    prod.price = Double.parseDouble(currentPrice);
-                }
-
-                prod.url = "https://www.ebay.com/itm/" + itemId;
-
-                ebay.add(prod);
-            }
-
-        } catch (MalformedURLException e) {
-            System.out.print("walmart: Invalid search query");
-        } catch (IOException e) {
-            System.out.print("walmart: Failed to open url");
+        // parsing xml
+        String[] items = result.split("<Product>"); // do not include first for the parse
+        if (itemCount > items.length) {
+            itemCount = items.length - 1;
         }
+        for (int itemIndex = 1; itemIndex <= itemCount; itemIndex++) {
+            ProductListing prod = new ProductListing();
+            String item = items[itemIndex];
+
+            String productId = getProductIdElement(item), currentPrice;
+            prod.name = getElement(item,"Title");
+            prod.retailer = "Ebay";
+
+            // Product Id to Item Id
+            String itemIdXml = ebayProductIdToItemId(productId);
+
+            String itemId = getElement(itemIdXml, "itemId");
+
+            if (itemId.equals("XML_TAG_NOT_FOUND")) {
+                continue;
+            }
+
+            String itemContentsXml = ebayGetItemById(itemId);
+
+            currentPrice = getCurrentPriceElement(itemContentsXml);
+
+            if (currentPrice.equals("XML_TAG_NOT_FOUND")) {
+                prod.price = -1.0;
+            } else {
+                prod.price = Double.parseDouble(currentPrice);
+            }
+
+            prod.url = "https://www.ebay.com/itm/" + itemId;
+
+            ebay.add(prod);
+        }
+
 
         return ebay;
     }
 
-    private static String ebayProductIdToItemId(String pid) {
+    private String ebayProductIdToItemId(String pid) {
         String ret = "";
         String pidToItemId = "http://svcs.ebay.com/services/search/FindingService/v1?" +
                 "OPERATION-NAME=findItemsByProduct&" +
@@ -225,30 +214,12 @@ public class ListingResults {
                 "productId.@type=ReferenceID&" +
                 "productId=" + pid;
 
-        try {
-            URL url = new URL(pidToItemId);
-            HttpURLConnection xml = (HttpURLConnection) url.openConnection();
-            InputStream in = new BufferedInputStream(xml.getInputStream());
-            StringBuffer sb = new StringBuffer();
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String read;
+        GetData gd = new GetData();
 
-            while ((read = br.readLine()) != null) {
-                sb.append(read);
-            }
-            br.close();
-
-            ret = sb.toString();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ret;
+        return gd.doInBackground(pidToItemId);
     }
 
-    private static String ebayGetItemById(String itemId) {
+    private String ebayGetItemById(String itemId) {
         String ret = "";
         String pidToItemId = "http://open.api.ebay.com/shopping?" +
                 "callname=GetSingleItem&" +
@@ -259,26 +230,8 @@ public class ListingResults {
                 "IncludeSelector=Description,ItemSpecifics,ShippingCosts&" +
                 "ItemID=" + itemId;
 
-        try {
-            URL url = new URL(pidToItemId);
-            HttpURLConnection xml = (HttpURLConnection) url.openConnection();
-            InputStream in = new BufferedInputStream(xml.getInputStream());
-            StringBuffer sb = new StringBuffer();
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String read;
+        GetData gd = new GetData();
 
-            while ((read = br.readLine()) != null) {
-                sb.append(read);
-            }
-            br.close();
-
-            ret = sb.toString();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ret;
+        return gd.doInBackground(pidToItemId);
     }
 }
