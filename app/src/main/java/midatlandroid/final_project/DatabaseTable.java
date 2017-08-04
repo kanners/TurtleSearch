@@ -1,11 +1,14 @@
 package midatlandroid.final_project;
 
+import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.io.IOException;
@@ -40,8 +43,8 @@ public class DatabaseTable {
 
     public Cursor getResults (String query, String[] columns) {
         searchItem = query;
-        String selection = COL_NAME + " MATCH ?";
-        String[] selectionArgs = new String[] {searchItem+"*"+"*"+"*"+"*"+"*"};
+        String selection = COL_NAME + "= ?";
+        String[] selectionArgs = new String[] {searchItem+"*"};
 
         return query(selection, selectionArgs, columns);
     }
@@ -88,8 +91,10 @@ public class DatabaseTable {
             }).start();
         }
 
-        // TODO: load data from search results here
         private void loadData() throws IOException {
+
+            String query = SearchManager.QUERY;
+            query = searchItem;
 
             ListingResults result = new ListingResults();
 
@@ -116,10 +121,13 @@ public class DatabaseTable {
             return mDatabase.insert(FTS_VIRTUAL_TABLE, null, initialValues);
         }
 
+
         @Override
         public void onCreate(SQLiteDatabase db) {
             mDatabase = db;
             mDatabase.execSQL(FTS_TABLE_CREATE);
+
+
             loadResults();
         }
 

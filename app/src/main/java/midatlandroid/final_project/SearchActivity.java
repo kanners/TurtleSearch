@@ -104,7 +104,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-        List<ListSearchItem> list = new ArrayList<ListSearchItem>();
+
         handleIntent(getIntent());
 
     }
@@ -151,8 +151,22 @@ public class SearchActivity extends AppCompatActivity {
         //verify action
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Cursor c = dbResults.getResults(query, null);
 
+            List<ListSearchItem> list = new ArrayList<>();
+            ListSearchItem item1 = new ListSearchItem();
+            item1.name ="bob";
+            list.add(item1);
+            ListSearchItem item2 = new ListSearchItem();
+            item2.name ="bob";
+            list.add(item2);
+
+            ListItemAdapter adapter;
+            adapter = new ListItemAdapter(this, 0, list);
+            ListView listView = (ListView) findViewById(R.id.ListView);
+            listView.setAdapter(adapter);
+
+        } if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            intent.getExtras();
         }
     }
 
