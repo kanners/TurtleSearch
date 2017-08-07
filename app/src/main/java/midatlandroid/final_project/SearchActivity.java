@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.SearchRecentSuggestions;
 import android.speech.RecognizerIntent;
@@ -23,11 +25,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -117,20 +121,6 @@ public class SearchActivity extends AppCompatActivity {
         });
 
         handleIntent(getIntent());
-
-        List<ProductListing> list = new ArrayList();
-        ListingResults listingResults = new ListingResults();
-
-//        // Get the intent, verify action, and perform query
-//        Intent intent = getIntent();
-//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//            list = listingResults.getResults(query);
-//            Toast toast = Toast.makeText(getApplicationContext(), "results got", Toast.LENGTH_LONG);
-//            toast.show();
-//        }
-
-
     }
 
     @Override
@@ -158,7 +148,10 @@ public class SearchActivity extends AppCompatActivity {
         }
         switch(item.getItemId()) {
             case R.id.search:
+               // ProgressBar spinner = (ProgressBar) findViewById();
+                // set visible
                 onSearchRequested();
+                // set gone
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -175,9 +168,7 @@ public class SearchActivity extends AppCompatActivity {
         //verify action
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-                    MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
             suggestions.saveRecentQuery(query,null);
 
             String path = "/data/data/" + getPackageName() + "/turtle_search.db";
@@ -219,6 +210,13 @@ public class SearchActivity extends AppCompatActivity {
             String dbName = "", dbRet = "", dbURL = "";
             double dbPrice = 0.;
 
+            Bitmap walmartImage;
+            walmartImage =
+                    BitmapFactory.decodeResource(getResources(), R.mipmap.walmart_listing);
+            Bitmap ebayImage;
+            ebayImage =
+                    BitmapFactory.decodeResource(getResources(), R.mipmap.ebay_listing);
+
             if (cursor.getCount() != 0) {
                 do {
                     dbName = cursor.getString(cursor.getColumnIndex("name"));
@@ -229,6 +227,11 @@ public class SearchActivity extends AppCompatActivity {
                     item.name = dbName;
                     item.price = dbPrice;
                     item.retailer = dbRet;
+                    if (item.retailer.equals("Walmart")) {
+                        item.image = walmartImage;
+                    } if (item.retailer.equals("Ebay")) {
+                        item.image = ebayImage;
+                    }
                     item.url = dbURL;
                     listView.add(item);
                 } while (cursor.moveToNext());

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Currency;
@@ -26,6 +27,10 @@ public class ListItemAdapter extends ArrayAdapter<ListSearchItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ListSearchItem item = (ListSearchItem) getItem(position);
         View view = mInflater.inflate(R.layout.list_item, null);
+
+        ImageView imageView;
+        imageView = (ImageView) view.findViewById(R.id.store_image);
+        imageView.setImageBitmap(item.image);
 
         TextView name;
         name = (TextView) view.findViewById(R.id.name);

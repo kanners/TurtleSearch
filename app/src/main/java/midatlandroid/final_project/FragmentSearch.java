@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 /**
@@ -53,7 +54,6 @@ public class FragmentSearch extends Fragment {
         db.close();
 
         // click listener for new_search_btn, start SearchActivity
-        // TODO: change font of newSearchBtn
         final Button newSearchBtn = (Button) rootView.findViewById(R.id.new_search_btn);
         newSearchBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
