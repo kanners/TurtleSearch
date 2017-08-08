@@ -191,7 +191,7 @@ public class SearchActivity extends AppCompatActivity {
             ListingResults listingResults = new ListingResults();
             ArrayList<ProductListing> listings = listingResults.getResults(input);
 
-            db.execSQL("DROP TABLE Results;");
+            db.execSQL("DROP TABLE IF EXISTS Results;");
             db.execSQL("CREATE TABLE IF NOT EXISTS Results(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price DECIMAL, retailer TEXT, url TEXT);");
 
             ProductListing[] list = listings.toArray(new ProductListing[0]);
